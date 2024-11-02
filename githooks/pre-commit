@@ -37,7 +37,10 @@ if [[ "$branch" == "trunk" ]]; then
     echo "== Running pre-commit tests for trunk =="
     echo "Checking everything is staged..."
     git add --dry-run . &> $current_cmd_log
+    # If there is anything unstaged, i.e.: if the working tree doesn't exactly coincide
+    # with the commit we're running...
     if [[ $(git add --dry-run . | grep -v ^$ | wc -l) > 0 ]]; then
+        # then error, because it means our tests won't be covering the commit.
         error
     fi
     echo
@@ -47,14 +50,14 @@ if [[ "$branch" == "trunk" ]]; then
     echo "Syncing virtual environment..."
     rye sync --no-lock --features= &> $current_cmd_log
     echo "Running tests..."
-    rye run python -m pytest --pre-commit &> $current_cmd_log
+    rye run python -m pytest -v --pre-commit &> $current_cmd_log
     echo
 
     echo "-- Running tests with all features enabled -- "
     echo "Syncing virtual environment..."
     rye sync --no-lock --all-features &> $current_cmd_log
     echo "Running tests..."
-    rye run python -m pytest --pre-commit &> $current_cmd_log
+    rye run python -m pytest -v --pre-commit &> $current_cmd_log
     echo
 fi
 
