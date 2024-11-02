@@ -1,0 +1,63 @@
+#!/bin/bash
+
+echo ">>> PRE-COMMIT HOOK START <<<"
+
+function error()
+{
+    set -e
+    trap - ERR
+
+    echo
+    echo "== Pre-commit hook failed =="
+    echo "Cleaning up and aborting commit"
+    echo
+    echo
+
+    echo "-- Error logs of last failed command --"
+    cat $current_cmd_log
+    echo
+
+    echo "-- Cleanup --"
+    echo "Restoring virtual environment..."
+    rye sync --no-lock --all-features > /dev/null
+    echo
+
+    echo
+    echo ">>> PRE-COMMIT HOOK FAILED <<<"
+    exit 1
+}
+trap error ERR
+
+branch=$(git symbolic-ref --short head)
+current_cmd_log=$(mktemp)
+
+if [[ "$branch" == "trunk" ]]; then
+
+    echo
+    echo "== Running pre-commit tests for trunk =="
+    echo "Checking everything is staged..."
+    git add --dry-run . &> $current_cmd_log
+    if [[ $(git add --dry-run . | grep -v ^$ | wc -l) > 0 ]]; then
+        error
+    fi
+    echo
+    echo
+
+    echo "-- Running tests with all features disabled --"
+    echo "Syncing virtual environment..."
+    rye sync --no-lock --features= &> $current_cmd_log
+    echo "Running tests..."
+    rye run python -m pytest --pre-commit &> $current_cmd_log
+    echo
+
+    echo "-- Running tests with all features enabled -- "
+    echo "Syncing virtual environment..."
+    rye sync --no-lock --all-features &> $current_cmd_log
+    echo "Running tests..."
+    rye run python -m pytest --pre-commit &> $current_cmd_log
+    echo
+fi
+
+echo
+echo ">>> PRE-COMMIT HOOK SUCCESS <<<"
+exit 0

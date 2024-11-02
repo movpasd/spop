@@ -1,6 +1,6 @@
 [project]
 name = "spop"
-version = "0.1.0"
+version = "0.0.0"
 description = "Add your description here"
 authors = [
     { name = "Movpasd", email = "54367524+movpasd@users.noreply.github.com" }
@@ -25,6 +25,8 @@ managed = true
 dev-dependencies = [
     "pytest>=8.3.3",
     "black>=24.10.0",
+    "ipython>=8.29.0",
+    "ipdb>=0.13.13",
 ]
 
 [tool.hatch.metadata]
@@ -32,3 +34,7 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/spop"]
+
+[tool.pytest.ini_options]
+addopts = "--pdbcls=IPython.terminal.debugger:Pdb"
+python_files = "_test.py"
