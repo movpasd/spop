@@ -4,5 +4,5 @@ symbolic programming and optimization for Python
 
 ## Development
 
-* Rye
+* UV
 * Git hooks: `git config core.hooksPath githooks`
