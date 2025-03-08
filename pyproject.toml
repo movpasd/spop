@@ -28,7 +28,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
 addopts = "--pdbcls=IPython.terminal.debugger:Pdb"
-python_files = "_test*.py"
+python_files = ["_test.py", "_test_*.py"]
 
 [tool.ruff]
 ignore = ["F403", "F405"]
