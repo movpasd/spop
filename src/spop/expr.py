@@ -39,9 +39,10 @@ Type-safe expression-building DSL
 
 from __future__ import annotations
 
-from typing import Any, overload
+from typing import Any, Type, overload
 
 from abc import ABC, abstractmethod
+import inspect
 
 
 def p_symbol(name: str) -> PExpr:
@@ -61,8 +62,24 @@ def add(self: PExpr, other: LExpr) -> LExpr: ...
 @overload
 def add(self: LExpr, other: LExpr) -> LExpr: ...
 # implementation
-def add(self: Expr, other: Any) -> Expr:
-    raise NotImplementedError()
+def add(self: Any, other: Any) -> Expr:
+    if not isinstance(self, Expr) or not isinstance(other, Expr):
+        raise TypeError(f"expected (Expr, Expr), got ({type(self)}, {type(other)})")
+
+    match (self, other):
+        case (PExpr(), PExpr()):
+            return _PAdd(self, other)
+        case (PExpr(), LExpr()):
+            return _LAdd(self, other)
+        case (LExpr(), PExpr()):
+            return _LAdd(self, other)
+        case (LExpr(), LExpr()):
+            return _LAdd(self, other)
+        case _:
+            raise TypeError(
+                f"can't handle ({type(self)}, {type(other)}) -- "
+                f"did you subclass `Expr`?"
+            )
 
 
 @overload
@@ -98,8 +115,15 @@ def neg(self: Expr) -> Expr:
     raise NotImplementedError()
 
 
+# TODO: pos() -- unary plus
+
+
 class Expr(ABC):
-    """Base class for expressions"""
+    """
+    Base class for expressions
+
+    Sealed: do not subclass.
+    """
 
     # Mathematical operations are implemented in module-level functions (`add`, `mul`,
     # ...) rather than as methods because it's easier to do double dispatch that way
@@ -115,11 +139,19 @@ class Expr(ABC):
 
 
 class PExpr(Expr):
-    """Base class for parameter-level (i.e.: degree-zero) expressions"""
+    """
+    Base class for parameter-level (i.e.: degree-zero) expressions
+
+    Sealed: do not subclass.
+    """
 
 
 class LExpr(Expr):
-    """Base class for linear (i.e.: degree-one) expressions"""
+    """
+    Base class for linear (i.e.: degree-one) expressions
+
+    Sealed: do not subclass.
+    """
 
 
 # ---
@@ -141,13 +173,29 @@ class _LSymbol(LExpr):
         return {"type": "LSymbol", "name": self.name}
 
 
-class _PSum(PExpr): ...
+class _PAdd[L: PExpr, R: PExpr](PExpr):
+    def __init__(self, left: L, right: R):
+        self.left: L = left
+        self.right: R = right
+
+    def ast_dict(self):
+        return {
+            "type": "PAdd",
+            "left": self.left.ast_dict(),
+            "right": self.right.ast_dict(),
+        }
 
 
-class _LSum(LExpr): ...
+class _LAdd[L: PExpr | LExpr, R: PExpr | LExpr](LExpr):
+    def __init__(self, left: L, right: R):
+        self.left: L = left
+        self.right: R = right
+
+    def ast_dict(self):
+        return {
+            "type": "LAdd",
+            "left": self.left.ast_dict(),
+            "right": self.right.ast_dict(),
+        }
 
 
-class _PProd(PExpr): ...
-
-
-class _LProd(LExpr): ...

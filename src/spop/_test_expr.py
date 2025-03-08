@@ -5,7 +5,6 @@ from spop import _testutils
 from .expr import *
 
 
-@pytest.mark.xfail(reason="nyi", raises=NotImplementedError)
 def test_symbol_add_runtime_types():
     """
     Tests publicly-facing runtime types of addition of two symbols of all degree
