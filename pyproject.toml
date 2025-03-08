@@ -5,23 +5,19 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 authors = [
-    { name = "Movpasd", email = "54367524+movpasd@users.noreply.github.com" }
+    { name = "Movpasd", email = "54367524+movpasd@users.noreply.github.com" },
 ]
-dependencies = [
-    "highspy[highs]>=1.9.0",
-    "numpy>=2.2.3",
-]
+dependencies = ["highspy[highs]>=1.9.0", "numpy>=2.2.3"]
 
 [project.optional-dependencies]
-highs = [
-    "highspy>=1.9.0",
-]
+highs = ["highspy>=1.9.0"]
 
 [dependency-groups]
 dev = [
     "hypothesis>=6.127.9",
     "ipdb>=0.13.13",
     "ipython>=9.0.2",
+    "mypy>=1.15.0",
     "pytest>=8.3.5",
     "ruff>=0.9.10",
 ]
@@ -33,3 +29,6 @@ build-backend = "setuptools.build_meta"
 [tool.pytest.ini_options]
 addopts = "--pdbcls=IPython.terminal.debugger:Pdb"
 python_files = "_test*.py"
+
+[tool.ruff]
+ignore = ["F403", "F405"]
