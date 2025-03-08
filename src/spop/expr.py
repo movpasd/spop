@@ -39,7 +39,7 @@ Type-safe expression-building DSL
 
 from __future__ import annotations
 
-from typing import overload
+from typing import Any, overload
 
 from abc import ABC, abstractmethod
 
@@ -61,7 +61,7 @@ def add(self: PExpr, other: LExpr) -> LExpr: ...
 @overload
 def add(self: LExpr, other: LExpr) -> LExpr: ...
 # implementation
-def add(self: Expr, other: Expr) -> Expr:
+def add(self: Expr, other: Any) -> Expr:
     raise NotImplementedError()
 
 
@@ -72,7 +72,29 @@ def mul(self: LExpr, other: PExpr) -> LExpr: ...
 @overload
 def mul(self: PExpr, other: LExpr) -> LExpr: ...
 # implementation
-def mul(self: Expr, other: Expr) -> Expr:
+def mul(self: Expr, other: Any) -> Expr:
+    raise NotImplementedError()
+
+
+@overload
+def sub(self: PExpr, other: PExpr) -> PExpr: ...
+@overload
+def sub(self: LExpr, other: PExpr) -> LExpr: ...
+@overload
+def sub(self: PExpr, other: LExpr) -> LExpr: ...
+@overload
+def sub(self: LExpr, other: LExpr) -> LExpr: ...
+# implementation
+def sub(self: Expr, other: Any) -> Expr:
+    raise NotImplementedError()
+
+
+@overload
+def neg(self: PExpr) -> PExpr: ...
+@overload
+def neg(self: LExpr) -> LExpr: ...
+# implementation
+def neg(self: Expr) -> Expr:
     raise NotImplementedError()
 
 
@@ -83,6 +105,8 @@ class Expr(ABC):
     # ...) rather than as methods because it's easier to do double dispatch that way
     __add__ = add
     __mul__ = mul
+    __sub__ = sub
+    __neg__ = neg
 
     @abstractmethod
     def ast_dict(self) -> dict:
