@@ -5,15 +5,20 @@ Utilities used internally for running tests
 from typing import Any
 
 import json
+import mypy.api
 
 
-def parse_mypy_output(stdout: str) -> list[dict[str, Any]]:
+def run_mypy(file: str) -> tuple[list[dict[str, Any]], int, str]:
     """
-    Parses the mypy output to extract the list of mypy hits
+    Run mypy on the given file
 
-    `stdout` should be the standard output (not standard error) of mypy with `--output
-    json` is enabled.
+    Returns
+    -------
+    (hits, status_code, stderr) -- where `hits` is a dictionary consisting of each mypy
+    hit (each mypy error found) as printed to stdout
     """
+    stdout, stderr, status_code = mypy.api.run(["-O", "json", "--", file])
+
     hits = []
     for line in stdout.split("\n"):
         if line == "":
@@ -24,4 +29,5 @@ def parse_mypy_output(stdout: str) -> list[dict[str, Any]]:
                 f"Expected mypy stdout to produce a dictionary: {type(entry)=}"
             )
         hits.append(entry)
-    return hits
+
+    return hits, status_code, stderr
