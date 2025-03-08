@@ -3,26 +3,27 @@ name = "spop"
 version = "0.0.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.12.7"
+requires-python = ">=3.13"
 authors = [
     { name = "Movpasd", email = "54367524+movpasd@users.noreply.github.com" }
 ]
 dependencies = [
-    "numpy>=2.1.3",
+    "highspy[highs]>=1.9.0",
+    "numpy>=2.2.3",
 ]
 
 [project.optional-dependencies]
 highs = [
-    "highspy>=1.8.1",
+    "highspy>=1.9.0",
 ]
 
 [dependency-groups]
 dev = [
-    "black>=24.10.0",
-    "hypothesis>=6.119.4",
+    "hypothesis>=6.127.9",
     "ipdb>=0.13.13",
-    "ipython>=8.29.0",
-    "pytest>=8.3.3",
+    "ipython>=9.0.2",
+    "pytest>=8.3.5",
+    "ruff>=0.9.10",
 ]
 
 [build-system]
