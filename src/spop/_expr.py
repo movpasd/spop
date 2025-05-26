@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC
+from typing import overload
 
 type PyScalar = int | float
 """
@@ -51,34 +52,69 @@ def unbound_var(name: str) -> Var:
 
 
 class _ParamExpr(ABC):
+    @overload
+    def __add__(self, other: ParamExpr | PyScalar) -> ParamExpr: ...
+    @overload
+    def __add__(self, other: LinExpr) -> LinExpr: ...
+    # implementation
     def __add__(self, other):
         raise NotImplementedError()
 
+    @overload
+    def __radd__(self, other: ParamExpr | PyScalar) -> ParamExpr: ...
+    @overload
+    def __radd__(self, other: LinExpr) -> LinExpr: ...
+    # implementation
     def __radd__(self, other):
         raise NotImplementedError()
 
+    @overload
+    def __sub__(self, other: ParamExpr | PyScalar) -> ParamExpr: ...
+    @overload
+    def __sub__(self, other: LinExpr) -> LinExpr: ...
+    # implementation
     def __sub__(self, other):
         raise NotImplementedError()
 
+    @overload
+    def __rsub__(self, other: ParamExpr | PyScalar) -> ParamExpr: ...
+    @overload
+    def __rsub__(self, other: LinExpr) -> LinExpr: ...
+    # implementation
     def __rsub__(self, other):
         raise NotImplementedError()
 
+    @overload
+    def __mul__(self, other: ParamExpr | PyScalar) -> ParamExpr: ...
+    @overload
+    def __mul__(self, other: LinExpr) -> LinExpr: ...
+    # implementation
     def __mul__(self, other):
         raise NotImplementedError()
 
+    @overload
+    def __rmul__(self, other: ParamExpr | PyScalar) -> ParamExpr: ...
+    @overload
+    def __rmul__(self, other: LinExpr) -> LinExpr: ...
+    # implementation
     def __rmul__(self, other):
         raise NotImplementedError()
 
-    def __truediv__(self, other):
+    def __truediv__(self, other: ParamExpr | PyScalar) -> ParamExpr:
         raise NotImplementedError()
 
+    @overload
+    def __rtruediv__(self, other: ParamExpr | PyScalar) -> ParamExpr: ...
+    @overload
+    def __rtruediv__(self, other: LinExpr) -> LinExpr: ...
+    # implementation
     def __rtruediv__(self, other):
         raise NotImplementedError()
 
-    def __pos__(self):
+    def __pos__(self) -> ParamExpr:
         raise NotImplementedError()
 
-    def __neg__(self):
+    def __neg__(self) -> ParamExpr:
         raise NotImplementedError()
 
 
@@ -87,34 +123,54 @@ class _Param(_ParamExpr):
 
 
 class _LinExpr(ABC):
+    @overload
+    def __add__(self, other: ParamExpr | PyScalar) -> LinExpr: ...
+    @overload
+    def __add__(self, other: LinExpr) -> LinExpr: ...
+    # implementation
     def __add__(self, other):
         raise NotImplementedError()
 
+    @overload
+    def __radd__(self, other: ParamExpr | PyScalar) -> LinExpr: ...
+    @overload
+    def __radd__(self, other: LinExpr) -> LinExpr: ...
+    # implementation
     def __radd__(self, other):
         raise NotImplementedError()
 
+    @overload
+    def __sub__(self, other: ParamExpr | PyScalar) -> LinExpr: ...
+    @overload
+    def __sub__(self, other: LinExpr) -> LinExpr: ...
+    # implementation
     def __sub__(self, other):
         raise NotImplementedError()
 
+    @overload
+    def __rsub__(self, other: ParamExpr | PyScalar) -> LinExpr: ...
+    @overload
+    def __rsub__(self, other: LinExpr) -> LinExpr: ...
+    # implementation
     def __rsub__(self, other):
         raise NotImplementedError()
 
-    def __mul__(self, other):
+    def __mul__(self, other: ParamExpr | PyScalar) -> LinExpr:
         raise NotImplementedError()
 
-    def __rmul__(self, other):
+    def __rmul__(self, other: ParamExpr | PyScalar) -> LinExpr:
         raise NotImplementedError()
 
-    def __truediv__(self, other):
+    def __truediv__(self, other: ParamExpr | PyScalar) -> LinExpr:
         raise NotImplementedError()
 
-    def __rtruediv__(self, other):
+    # def __rtruediv__(self, other):
+    #     ...
+
+    def __pos__(self) -> LinExpr:
         raise NotImplementedError()
 
-    def __pos__(self):
-        raise NotImplementedError()
-
-    def __neg__(self):
+    def __neg__(self) -> LinExpr:
         raise NotImplementedError()
 
 
