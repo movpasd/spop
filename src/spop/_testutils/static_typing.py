@@ -1,11 +1,7 @@
-"""
-Utilities used internally for running tests
-"""
-
+import json
 from typing import Any
 
-import json
-import mypy.api
+import mypy
 
 
 def run_mypy(file: str) -> tuple[list[dict[str, Any]], int, str]:
