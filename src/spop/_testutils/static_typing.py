@@ -30,7 +30,7 @@ def check(file: str) -> list[Hit]:
 
     stdout, stderr, status_code = mypy.api.run(["-O", "json", "--", file])
 
-    if status_code != 0:
+    if status_code not in {0, 1}:
         raise RuntimeError(
             f"Mypy failed:\n{status_code=}\nstdout=\n{stdout}\nstderr=\n{stderr}\n"
         )
